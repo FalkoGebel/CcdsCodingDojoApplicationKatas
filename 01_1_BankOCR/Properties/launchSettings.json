@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "01_1_BankOCR": {
+      "commandName": "Project",
+      "commandLineArgs": "datei1.txt"
+    }
+  }
+}

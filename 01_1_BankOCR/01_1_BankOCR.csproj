@@ -6,6 +6,11 @@
     <RootNamespace>_01_1_BankOCR</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>bankocr</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\01_2_BankOCRLibrary\01_2_BankOCRLibrary.csproj" />
+  </ItemGroup>
 
 </Project>

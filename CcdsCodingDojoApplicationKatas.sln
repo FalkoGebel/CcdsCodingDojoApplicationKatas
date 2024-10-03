@@ -3,12 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01_1_BankOCR", "01_1_BankOCR\01_1_BankOCR.csproj", "{08344DA0-94FE-4A3E-A492-93F9E8DF59FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01_1_BankOCR", "01_1_BankOCR\01_1_BankOCR.csproj", "{08344DA0-94FE-4A3E-A492-93F9E8DF59FA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{42778050-A0FF-46F6-BB2D-016CE9F094C4}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01_2_BankOCRLibrary", "01_2_BankOCRLibrary\01_2_BankOCRLibrary.csproj", "{069D5432-45FA-4C07-B010-0102E51B9B05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01_3_BankOCRTests", "01_3_BankOCRTests\01_3_BankOCRTests.csproj", "{880A44D7-0663-4094-839B-63471C41AA3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +24,14 @@ Global
 		{08344DA0-94FE-4A3E-A492-93F9E8DF59FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08344DA0-94FE-4A3E-A492-93F9E8DF59FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08344DA0-94FE-4A3E-A492-93F9E8DF59FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{069D5432-45FA-4C07-B010-0102E51B9B05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{069D5432-45FA-4C07-B010-0102E51B9B05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{069D5432-45FA-4C07-B010-0102E51B9B05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{069D5432-45FA-4C07-B010-0102E51B9B05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{880A44D7-0663-4094-839B-63471C41AA3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{880A44D7-0663-4094-839B-63471C41AA3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{880A44D7-0663-4094-839B-63471C41AA3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{880A44D7-0663-4094-839B-63471C41AA3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
