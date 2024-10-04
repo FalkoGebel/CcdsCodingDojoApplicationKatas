@@ -2,7 +2,7 @@
 
 namespace _01_1_BankOCR
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -14,11 +14,16 @@ namespace _01_1_BankOCR
 
             try
             {
-                BankOcrHelpers.GetAccountNumbersFromFile(args[0]);
+                foreach (string line in BankOcrHelpers.GetAccountNumbersFromFile(args[0]))
+                    Console.WriteLine(line);
             }
             catch (ArgumentException ae)
             {
                 Console.WriteLine(ae.Message);
+            }
+            catch (InvalidDataException ide)
+            {
+                Console.WriteLine(ide.Message);
             }
         }
     }
