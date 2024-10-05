@@ -1,6 +1,6 @@
-﻿using _01_2_BankOCRLibrary;
+﻿using BankOcrLibrary;
 
-namespace _01_1_BankOCR
+namespace BankOcr
 {
     public class Program
     {

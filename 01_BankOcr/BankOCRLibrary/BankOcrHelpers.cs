@@ -1,4 +1,4 @@
-﻿namespace _01_2_BankOCRLibrary
+﻿namespace BankOcrLibrary
 {
     public static class BankOcrHelpers
     {
