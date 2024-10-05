@@ -1,7 +1,7 @@
-using _01_2_BankOCRLibrary;
+using BankOcrLibrary;
 using FluentAssertions;
 
-namespace _01_3_BankOCRTests
+namespace BankOcrTests
 {
     [TestClass]
     public class HelpersTests

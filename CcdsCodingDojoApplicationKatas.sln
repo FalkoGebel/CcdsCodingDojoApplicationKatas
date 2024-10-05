@@ -3,16 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01_1_BankOCR", "01_1_BankOCR\01_1_BankOCR.csproj", "{08344DA0-94FE-4A3E-A492-93F9E8DF59FA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{42778050-A0FF-46F6-BB2D-016CE9F094C4}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01_2_BankOCRLibrary", "01_2_BankOCRLibrary\01_2_BankOCRLibrary.csproj", "{069D5432-45FA-4C07-B010-0102E51B9B05}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01_BankOcr", "01_BankOcr", "{07A29132-1D9B-47AD-AA36-343B1AE13BC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01_3_BankOCRTests", "01_3_BankOCRTests\01_3_BankOCRTests.csproj", "{880A44D7-0663-4094-839B-63471C41AA3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankOcr", "01_BankOcr\BankOCR\BankOcr.csproj", "{1AAA6A86-0018-430E-A159-2C2F64ECD854}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankOcrLibrary", "01_BankOcr\BankOCRLibrary\BankOcrLibrary.csproj", "{D763BB68-DB4F-44AA-99FB-03A52B804B62}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankOcrTests", "01_BankOcr\BankOCRTests\BankOcrTests.csproj", "{2EA2DD64-454C-4E3F-8AD5-6D501904C339}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,21 +22,26 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{08344DA0-94FE-4A3E-A492-93F9E8DF59FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08344DA0-94FE-4A3E-A492-93F9E8DF59FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{08344DA0-94FE-4A3E-A492-93F9E8DF59FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08344DA0-94FE-4A3E-A492-93F9E8DF59FA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{069D5432-45FA-4C07-B010-0102E51B9B05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{069D5432-45FA-4C07-B010-0102E51B9B05}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{069D5432-45FA-4C07-B010-0102E51B9B05}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{069D5432-45FA-4C07-B010-0102E51B9B05}.Release|Any CPU.Build.0 = Release|Any CPU
-		{880A44D7-0663-4094-839B-63471C41AA3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{880A44D7-0663-4094-839B-63471C41AA3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{880A44D7-0663-4094-839B-63471C41AA3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{880A44D7-0663-4094-839B-63471C41AA3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AAA6A86-0018-430E-A159-2C2F64ECD854}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AAA6A86-0018-430E-A159-2C2F64ECD854}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AAA6A86-0018-430E-A159-2C2F64ECD854}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AAA6A86-0018-430E-A159-2C2F64ECD854}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D763BB68-DB4F-44AA-99FB-03A52B804B62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D763BB68-DB4F-44AA-99FB-03A52B804B62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D763BB68-DB4F-44AA-99FB-03A52B804B62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D763BB68-DB4F-44AA-99FB-03A52B804B62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EA2DD64-454C-4E3F-8AD5-6D501904C339}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EA2DD64-454C-4E3F-8AD5-6D501904C339}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EA2DD64-454C-4E3F-8AD5-6D501904C339}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EA2DD64-454C-4E3F-8AD5-6D501904C339}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1AAA6A86-0018-430E-A159-2C2F64ECD854} = {07A29132-1D9B-47AD-AA36-343B1AE13BC0}
+		{D763BB68-DB4F-44AA-99FB-03A52B804B62} = {07A29132-1D9B-47AD-AA36-343B1AE13BC0}
+		{2EA2DD64-454C-4E3F-8AD5-6D501904C339} = {07A29132-1D9B-47AD-AA36-343B1AE13BC0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7DE62E50-FC5D-4074-9D04-1C787BD8A828}
