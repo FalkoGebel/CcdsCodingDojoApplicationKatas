@@ -5,6 +5,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId></PackageId>
+    <AssemblyName>compest</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ComparativeEstimationLibrary\ComparativeEstimationLibrary.csproj" />
+  </ItemGroup>
 
 </Project>
