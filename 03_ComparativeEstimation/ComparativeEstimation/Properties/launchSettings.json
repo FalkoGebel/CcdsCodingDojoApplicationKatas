@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ComparativeEstimation": {
+      "commandName": "Project",
+      "commandLineArgs": "peter@peter.de"
+    }
+  }
+}
