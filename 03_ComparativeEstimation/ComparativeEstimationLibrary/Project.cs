@@ -1,31 +1,50 @@
 ﻿namespace ComparativeEstimationLibrary
 {
-    public class Project
+    internal class Project(int id)
     {
-        public int Id { get; }
-        public string Title { get; set; } = string.Empty;  // optional
-        public Item[] Items { get; } = [];
-        public Comparision[] Comparisions { get; } = [];
-        public Dictionary<string, Item[]> Comparations { get; } = [];
+        private readonly int _minNumberOfItems = 2;
+        private readonly int _maxNumberOfItems = 10;
+        private readonly char _firstId = 'A';
 
-        public void AddItem(Item item)
+        internal int Id { get; private set; } = id;
+        internal bool ReadyToUse { get; set; }
+        internal string Title { get; set; } = string.Empty;
+        internal List<Item> Items { get; private set; } = [];
+        internal Comparision[] Comparisions { get; private set; } = [];
+        internal Dictionary<string, Item[]> Comparations { get; private set; } = [];
+
+        internal void AddItem(char itemId, string itemDescription)
+        {
+            if (itemId == ' ')
+                throw new ArgumentException("No item id");
+
+            if (itemDescription == string.Empty)
+                throw new ArgumentException("No item description");
+
+            Items.Add(new(itemId) { Description = itemDescription });
+        }
+
+        internal void AddOrUpdateComparation(string email, Item[] items)
         {
             throw new NotImplementedException();
         }
 
-        public void AddOrUpdateComparation(string email, Item[] items)
+        internal Item[] GetCummulatedComparation()
         {
             throw new NotImplementedException();
         }
 
-        public Item[] GetCummulatedComparation()
-        {
-            throw new NotImplementedException();
-        }
+        public override string ToString() => $"{Id}. {(Title == string.Empty ? "<UNTITLED>" : Title)}";
 
-        public void SaveToFile()
+        internal char GetNextItemId()
         {
-            throw new NotImplementedException();
+            if (Items.Count == _maxNumberOfItems)
+                return ' ';
+
+            if (Items.Count == 0)
+                return _firstId;
+
+            return (char)(Items.Last().Id + 1);
         }
     }
 }
