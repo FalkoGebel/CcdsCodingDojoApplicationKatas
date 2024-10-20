@@ -3,7 +3,6 @@
     internal class ProjectModel
     {
         public int Id { get; set; }
-        public bool ReadyToUse { get; set; }
         public string Title { get; set; } = string.Empty;
         //public List<Item> Items { get; private set; } = [];
         //public Comparision[] Comparisions { get; private set; } = [];

@@ -1,13 +1,12 @@
 ﻿namespace ComparativeEstimationLibrary
 {
-    internal class Project(int id)
+    internal class Project()
     {
         private readonly int _minNumberOfItems = 2;
         private readonly int _maxNumberOfItems = 10;
         private readonly char _firstId = 'A';
 
-        internal int Id { get; private set; } = id;
-        internal bool ReadyToUse { get; set; }
+        internal int Id { get; set; }
         internal string Title { get; set; } = string.Empty;
         internal List<Item> Items { get; private set; } = [];
         internal Comparision[] Comparisions { get; private set; } = [];
