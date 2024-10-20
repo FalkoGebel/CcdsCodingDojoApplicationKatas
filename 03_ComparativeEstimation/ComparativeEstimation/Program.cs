@@ -39,17 +39,17 @@ namespace ComparativeEstimation
                 else if (input.Equals("n", StringComparison.CurrentCultureIgnoreCase))
                 {
                     // Create new project and get project Id to show
-                    int projectId = administration.CreateNewProject();
-                    Console.WriteLine($"Project #{projectId}");
+                    administration.CreateNewProject();
+                    Console.WriteLine($"New Project");
 
                     // Ask once for title -> optional
                     Console.Write("Title (optional): ");
-                    administration.AddTitleToProject(projectId, Console.ReadLine() ?? "");
+                    administration.AddTitleToProject(Console.ReadLine() ?? "");
 
                     // Ask repeatedly for item until no item id is available
                     do
                     {
-                        char itemId = administration.GetNextProjectItemId(projectId);
+                        char itemId = administration.GetNextItemIdForProject();
 
                         if (itemId == ' ')
                             break;
@@ -60,25 +60,25 @@ namespace ComparativeEstimation
                         if (string.IsNullOrEmpty(itemDescription))
                             break;
 
-                        administration.AddItemToProject(projectId, itemId, itemDescription);
+                        administration.AddItemToProject(itemId, itemDescription);
                     } while (true);
 
                     // Show number of items and max. number of comparisions or if not valid
-                    if (administration.ProjectIsValid(projectId))
+                    if (administration.ProjectIsValid())
                     {
-                        Console.WriteLine($"{administration.GetNumberOfItemsForProject(projectId)} items" +
-                            $", max. number of comparisons: {administration.GetMaxNumberOfComparisonsForProject(projectId)}");
+                        Console.WriteLine($"{administration.GetNumberOfItemsForProject()} items" +
+                            $", max. number of comparisons: {administration.GetMaxNumberOfComparisonsForProject()}");
 
                         // Ask, if Ok -> save
                         Console.Write("Ok [Y/n]: ");
                         string? answer = Console.ReadLine();
 
                         if (!string.IsNullOrEmpty(answer) && answer.Equals("y", StringComparison.CurrentCultureIgnoreCase))
-                            administration.SaveProject(projectId);
+                            administration.SaveProject();
                     }
                     else
                     {
-                        Console.WriteLine("project is not valid");
+                        Console.WriteLine("Project is not valid");
                     }
                 }
                 else if (input.Equals("c", StringComparison.CurrentCultureIgnoreCase))

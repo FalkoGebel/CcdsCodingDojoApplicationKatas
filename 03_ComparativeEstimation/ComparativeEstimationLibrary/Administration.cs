@@ -5,9 +5,11 @@ namespace ComparativeEstimationLibrary
 {
     public class Administration
     {
+        private readonly string _testFileName = "test.txt";
         private readonly string _fileName = "compest.bat";
         private string _currentUserAsEmail = string.Empty;
         private List<Project> _projects = [];
+        private Project _currentProject = new();
 
         public string CurrentUserAsEmail
         {
@@ -26,7 +28,6 @@ namespace ComparativeEstimationLibrary
         public Administration(string currentUserAsEmail)
         {
             CurrentUserAsEmail = currentUserAsEmail;
-            LoadProjectsFromFile();
         }
 
         private static void ValidateEmail(string email)
@@ -44,21 +45,9 @@ namespace ComparativeEstimationLibrary
             }
         }
 
-        public int CreateNewProject()
-        {
-            int newId = _projects.Count == 0 ? 1 : _projects.OrderBy(p => p.Id).Last().Id + 1;
+        public void CreateNewProject() => _currentProject = new Project();
 
-            _projects.Add(new(newId));
-            SaveProjectsToFile();
-
-            return _projects.Last().Id;
-        }
-
-        public void AddTitleToProject(int projectId, string title)
-        {
-            Project project = GetProjectForId(projectId);
-            project.Title = title;
-        }
+        public void AddTitleToProject(string title) => _currentProject.Title = title;
 
         public string GetProjectString(int projectId) => GetProjectForId(projectId).ToString();
 
@@ -71,29 +60,39 @@ namespace ComparativeEstimationLibrary
                 : project;
         }
 
-        public char GetNextProjectItemId(int projectId) => GetProjectForId(projectId).GetNextItemId();
+        public char GetNextItemIdForProject() => _currentProject.GetNextItemId();
 
-        public void AddItemToProject(int projectId, char itemId, string itemDescription)
+        public void AddItemToProject(char itemId, string itemDescription)
+            => _currentProject.AddItem(itemId, itemDescription);
+
+        public int GetNumberOfItemsForProject() => _currentProject.Items.Count;
+
+        public bool ProjectIsValid() => _currentProject.Items.Count >= 2;
+
+        public void SaveProject()
         {
-            Project project = GetProjectForId(projectId);
-            project.AddItem(itemId, itemDescription);
+            FileStream fs = OpenAndGetFileStream();
+
+            LoadProjectsFromFile(fs);
+
+            _currentProject.Id = _projects.Count + 1;
+            _projects.Add(_currentProject);
+
+            SaveProjectsToFile(fs);
+
+            fs.Close();
         }
 
-        public int GetNumberOfItemsForProject(int projectId) => GetProjectForId(projectId).Items.Count;
-
-        public bool ProjectIsValid(int projectId) => GetProjectForId(projectId).Items.Count >= 2;
-
-        public void SaveProject(int projectId)
+        private FileStream OpenAndGetFileStream()
         {
-            GetProjectForId(projectId).ReadyToUse = true;
-            SaveProjectsToFile();
+            FileStream fs = new(_testFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+            return fs;
         }
 
-        private void SaveProjectsToFile()
+        private void SaveProjectsToFile(FileStream fs)
         {
             // TODO - save projects to correct file name -> binary
             // TODO - complete model(s) during saving
-            // TODO - only save the current project, because other users can work on the same file
             List<ProjectModel> projectModels = [];
 
             foreach (Project project in _projects)
@@ -102,30 +101,34 @@ namespace ComparativeEstimationLibrary
                 {
                     Id = project.Id,
                     Title = project.Title,
-                    ReadyToUse = project.ReadyToUse
                 };
 
                 projectModels.Add(projectModel);
             }
 
-            WriteToJsonFile("test.txt", projectModels);
+            WriteToJsonFile(_testFileName, projectModels);
         }
-        private void LoadProjectsFromFile()
+
+        private void LoadProjectsFromFile(FileStream fs)
         {
             // TODO - load projects from correct file name -> binary
             // TODO - complete model(s) during loading
-            List<ProjectModel> projectModels = ReadFromJsonFile<List<ProjectModel>>("test.txt");
+            List<ProjectModel> projectModels = ReadFromJsonFile<List<ProjectModel>>(fs);
 
             _projects.Clear();
-            foreach (ProjectModel projectModel in projectModels.Where(pm => pm.ReadyToUse))
-            {
-                Project project = new(projectModel.Id)
-                {
-                    Title = projectModel.Title,
-                    ReadyToUse = projectModel.ReadyToUse
-                };
 
-                _projects.Add(project);
+            if (projectModels != null)
+            {
+                foreach (ProjectModel projectModel in projectModels)
+                {
+                    Project project = new()
+                    {
+                        Id = projectModel.Id,
+                        Title = projectModel.Title,
+                    };
+
+                    _projects.Add(project);
+                }
             }
         }
 
@@ -145,7 +148,9 @@ namespace ComparativeEstimationLibrary
             try
             {
                 var contentsToWriteToFile = JsonConvert.SerializeObject(objectToWrite);
-                writer = new StreamWriter(filePath, append);
+
+                FileStream fs = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+                writer = new StreamWriter(fs);
                 writer.Write(contentsToWriteToFile);
             }
             finally
@@ -162,12 +167,12 @@ namespace ComparativeEstimationLibrary
         /// <typeparam name="T">The type of object to read from the file.</typeparam>
         /// <param name="filePath">The file path to read the object instance from.</param>
         /// <returns>Returns a new instance of the object read from the Json file.</returns>
-        public static T ReadFromJsonFile<T>(string filePath) where T : new()
+        public static T ReadFromJsonFile<T>(FileStream fs) where T : new()
         {
             TextReader reader = null;
             try
             {
-                reader = new StreamReader(filePath);
+                reader = new StreamReader(fs);
                 var fileContents = reader.ReadToEnd();
                 return JsonConvert.DeserializeObject<T>(fileContents);
             }
@@ -178,11 +183,13 @@ namespace ComparativeEstimationLibrary
             }
         }
 
-        public int GetMaxNumberOfComparisonsForProject(int projectId)
-            => Enumerable.Range(1, GetProjectForId(projectId).Items.Count - 1).Sum();
+        public int GetMaxNumberOfComparisonsForProject()
+            => Enumerable.Range(1, _currentProject.Items.Count - 1).Sum();
 
         public IEnumerable<string> GetProjects()
         {
+            // TODO - load from file
+
             return _projects.Select((p, i) => $"{i + 1}. {(p.Title == string.Empty ? "<UNTITLED>" : p.Title)}");
         }
     }

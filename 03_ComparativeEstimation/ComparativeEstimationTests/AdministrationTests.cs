@@ -19,70 +19,14 @@ namespace ComparativeEstimationTests
         }
 
         [TestMethod]
-        public void Test_new_project_and_get_1_as_returned_id()
-        {
-            // Arrange
-            Administration sut = new(_email);
-
-            // Act
-            int newProjectId = sut.CreateNewProject();
-
-            // Assert
-            newProjectId.Should().Be(1);
-        }
-
-        [TestMethod]
-        public void Test_new_project_two_times_and_get_correct_ids()
+        public void Test_get_next_project_item_id_and_get_A_as_returned_id()
         {
             // Arrange
             Administration sut = new(_email);
             sut.CreateNewProject();
 
             // Act
-            int newProjectId = sut.CreateNewProject();
-
-            // Assert
-            newProjectId.Should().Be(2);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void Test_add_title_with_invalid_project_id_and_get_argument_exception()
-        {
-            // Arrange
-            Administration sut = new(_email);
-
-            // Act
-            sut.AddTitleToProject(1, "");
-        }
-
-        [DataTestMethod]
-        [DataRow("")]
-        [DataRow("Sprint 11")]
-        [DataRow("Refactoring")]
-        [DataRow("just ANOTHER title")]
-        public void Test_add_title_and_get_correct_project_string(string title)
-        {
-            // Arrange
-            Administration sut = new(_email);
-            int newProjectId = sut.CreateNewProject();
-
-            // Act
-            sut.AddTitleToProject(newProjectId, title);
-
-            // Assert
-            sut.GetProjectString(newProjectId).Should().Be($"{newProjectId}. {(title == string.Empty ? "<UNTITLED>" : title)}");
-        }
-
-        [TestMethod]
-        public void Test_get_next_project_item_id_and_get_A_as_returned_id()
-        {
-            // Arrange
-            Administration sut = new(_email);
-            int newProjectId = sut.CreateNewProject();
-
-            // Act
-            char itemId = sut.GetNextProjectItemId(newProjectId);
+            char itemId = sut.GetNextItemIdForProject();
 
             // Assert
             itemId.Should().Be('A');
@@ -94,14 +38,14 @@ namespace ComparativeEstimationTests
         {
             // Arrange
             Administration sut = new(_email);
-            int newProjectId = sut.CreateNewProject();
-            char itemId = sut.GetNextProjectItemId(newProjectId);
+            sut.CreateNewProject();
+            char itemId = sut.GetNextItemIdForProject();
 
             // Act
-            sut.AddItemToProject(newProjectId, itemId, "");
+            sut.AddItemToProject(itemId, "");
 
             // Assert
-            sut.GetNumberOfItemsForProject(newProjectId).Should().Be(0);
+            sut.GetNumberOfItemsForProject().Should().Be(0);
         }
 
         [TestMethod]
@@ -110,14 +54,14 @@ namespace ComparativeEstimationTests
         {
             // Arrange
             Administration sut = new(_email);
-            int newProjectId = sut.CreateNewProject();
-            char itemId = sut.GetNextProjectItemId(newProjectId);
+            sut.CreateNewProject();
+            char itemId = sut.GetNextItemIdForProject();
 
             // Act
-            sut.AddItemToProject(newProjectId, ' ', "description");
+            sut.AddItemToProject(' ', "description");
 
             // Assert
-            sut.GetNumberOfItemsForProject(newProjectId).Should().Be(0);
+            sut.GetNumberOfItemsForProject().Should().Be(0);
         }
 
         [TestMethod]
@@ -125,14 +69,14 @@ namespace ComparativeEstimationTests
         {
             // Arrange
             Administration sut = new(_email);
-            int newProjectId = sut.CreateNewProject();
-            char itemId = sut.GetNextProjectItemId(newProjectId);
+            sut.CreateNewProject();
+            char itemId = sut.GetNextItemIdForProject();
 
             // Act
-            sut.AddItemToProject(newProjectId, itemId, "Item Description");
+            sut.AddItemToProject(itemId, "Item Description");
 
             // Assert
-            sut.GetNumberOfItemsForProject(newProjectId).Should().Be(1);
+            sut.GetNumberOfItemsForProject().Should().Be(1);
         }
 
         [DataTestMethod]
@@ -142,16 +86,16 @@ namespace ComparativeEstimationTests
         {
             // Arrange
             Administration sut = new(_email);
-            int newProjectId = sut.CreateNewProject();
+            sut.CreateNewProject();
 
             for (int i = 0; i < numberOfItems; i++)
             {
-                char itemId = sut.GetNextProjectItemId(newProjectId);
-                sut.AddItemToProject(newProjectId, itemId, "Item Description");
+                char itemId = sut.GetNextItemIdForProject();
+                sut.AddItemToProject(itemId, "Item Description");
             }
 
             // Act
-            bool isValid = sut.ProjectIsValid(newProjectId);
+            bool isValid = sut.ProjectIsValid();
 
             // Assert
             isValid.Should().BeFalse();
@@ -165,16 +109,16 @@ namespace ComparativeEstimationTests
         {
             // Arrange
             Administration sut = new(_email);
-            int newProjectId = sut.CreateNewProject();
+            sut.CreateNewProject();
 
             for (int i = 0; i < numberOfItems; i++)
             {
-                char itemId = sut.GetNextProjectItemId(newProjectId);
-                sut.AddItemToProject(newProjectId, itemId, "Item Description");
+                char itemId = sut.GetNextItemIdForProject();
+                sut.AddItemToProject(itemId, "Item Description");
             }
 
             // Act
-            bool isValid = sut.ProjectIsValid(newProjectId);
+            bool isValid = sut.ProjectIsValid();
 
             // Assert
             isValid.Should().BeTrue();
@@ -188,16 +132,16 @@ namespace ComparativeEstimationTests
         {
             // Arrange
             Administration sut = new(_email);
-            int newProjectId = sut.CreateNewProject();
+            sut.CreateNewProject();
 
             for (int i = 0; i < numberOfItems; i++)
             {
-                char itemId = sut.GetNextProjectItemId(newProjectId);
-                sut.AddItemToProject(newProjectId, itemId, "Item Description");
+                char itemId = sut.GetNextItemIdForProject();
+                sut.AddItemToProject(itemId, "Item Description");
             }
 
             // Act
-            int maxNumberOfComparisons = sut.GetMaxNumberOfComparisonsForProject(newProjectId);
+            int maxNumberOfComparisons = sut.GetMaxNumberOfComparisonsForProject();
 
             // Assert
             maxNumberOfComparisons.Should().Be(expected);
