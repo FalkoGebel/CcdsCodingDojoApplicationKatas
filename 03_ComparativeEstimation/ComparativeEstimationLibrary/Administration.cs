@@ -103,6 +103,15 @@ namespace ComparativeEstimationLibrary
                     Title = project.Title,
                 };
 
+                foreach (Item item in project.Items)
+                {
+                    projectModel.Items.Add(new()
+                    {
+                        Id = item.Id,
+                        Description = item.Description
+                    });
+                }
+
                 projectModels.Add(projectModel);
             }
 
@@ -126,6 +135,14 @@ namespace ComparativeEstimationLibrary
                         Id = projectModel.Id,
                         Title = projectModel.Title,
                     };
+
+                    foreach (ItemModel item in projectModel.Items)
+                    {
+                        project.Items.Add(new(item.Id)
+                        {
+                            Description = item.Description
+                        });
+                    }
 
                     _projects.Add(project);
                 }
@@ -178,8 +195,7 @@ namespace ComparativeEstimationLibrary
             }
             finally
             {
-                if (reader != null)
-                    reader.Close();
+                reader?.Close();
             }
         }
 
@@ -188,9 +204,11 @@ namespace ComparativeEstimationLibrary
 
         public IEnumerable<string> GetProjects()
         {
-            // TODO - load from file
+            FileStream fs = OpenAndGetFileStream();
+            LoadProjectsFromFile(fs);
+            fs.Close();
 
-            return _projects.Select((p, i) => $"{i + 1}. {(p.Title == string.Empty ? "<UNTITLED>" : p.Title)}");
+            return _projects.Select(p => $"{p.Id}. {(p.Title == string.Empty ? "<UNTITLED>" : p.Title)}");
         }
     }
 }
