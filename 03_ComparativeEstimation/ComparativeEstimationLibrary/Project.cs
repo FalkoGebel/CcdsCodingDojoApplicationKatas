@@ -9,6 +9,9 @@
         internal int Id { get; set; }
         internal string Title { get; set; } = string.Empty;
         internal List<Item> Items { get; private set; } = [];
+        internal List<List<char>> RankedItemIds { get; set; } = [];
+        internal char CurrentItem1ToRank { get; set; } = ' ';
+        internal char CurrentItem2ToRank { get; set; } = ' ';
         internal Comparision[] Comparisions { get; private set; } = [];
         internal Dictionary<string, Item[]> Comparations { get; private set; } = [];
 
