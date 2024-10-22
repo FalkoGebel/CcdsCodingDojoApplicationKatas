@@ -210,5 +210,42 @@ namespace ComparativeEstimationLibrary
 
             return _projects.Select(p => $"{p.Id}. {(p.Title == string.Empty ? "<UNTITLED>" : p.Title)}");
         }
+
+        public Comparision? GetNextComparision()
+        {
+            if (_currentProject.Items.Count == 0)
+                return null;
+
+            if (_currentProject.RankedItemIds.Count == 0)
+            {
+                _currentProject.CurrentItem1ToRank = _currentProject.Items[0].Id;
+                _currentProject.CurrentItem2ToRank = (char)(_currentProject.CurrentItem1ToRank + 1);
+                _currentProject.RankedItemIds.Add([_currentProject.CurrentItem1ToRank]);
+            }
+
+            while (true)
+            {
+                if (_currentProject.CurrentItem1ToRank >= _currentProject.Items[^1].Id)
+                    break;
+
+                if (_currentProject.CurrentItem2ToRank >= _currentProject.Items[^1].Id)
+                {
+                    _currentProject.CurrentItem1ToRank++;
+                    _currentProject.CurrentItem2ToRank = (char)(_currentProject.CurrentItem1ToRank + 1);
+                    continue;
+                }
+
+                // TODO - consider the list _currentProject.RankedItemIds
+
+                Item item1 = _currentProject.Items.Where(i => i.Id == _currentProject.CurrentItem1ToRank).First(),
+                     item2 = _currentProject.Items.Where(i => i.Id == _currentProject.CurrentItem2ToRank).First();
+
+                _currentProject.CurrentItem2ToRank++;
+
+                return new(item1, item2);
+            }
+
+            return null;
+        }
     }
 }

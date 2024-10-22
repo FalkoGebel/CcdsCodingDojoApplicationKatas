@@ -146,5 +146,36 @@ namespace ComparativeEstimationTests
             // Assert
             maxNumberOfComparisons.Should().Be(expected);
         }
+
+        [TestMethod]
+        public void Test_get_next_comparision()
+        {
+            // Arrange
+            Administration sut = new(_email);
+            sut.CreateNewProject();
+
+            for (int i = 0; i < 5; i++)
+            {
+                char itemId = sut.GetNextItemIdForProject();
+                sut.AddItemToProject(itemId, $"Item {itemId}");
+            }
+
+            // Act
+            Comparision? comparision = sut.GetNextComparision();
+
+            // Assert
+            comparision.Should().NotBeNull();
+            comparision.Item1.Output.Should().Be($"A: \"Item A\"");
+            comparision.Item2.Output.Should().Be($"B: \"Item B\"");
+
+
+            // Act
+            comparision = sut.GetNextComparision();
+
+            // Assert
+            comparision.Should().NotBeNull();
+            comparision.Item1.Output.Should().Be($"A: \"Item A\"");
+            comparision.Item2.Output.Should().Be($"C: \"Item C\"");
+        }
     }
 }

@@ -85,6 +85,24 @@ namespace ComparativeEstimation
                 {
                     // TODO - (C)ompare
 
+                    /*
+                     * 1. choose project
+                     * 
+                     * 2. show title
+                     * 
+                     * 3. ask for comparisions
+                     * while (true)
+                     * {
+                     *      comp = administraton.GetNextComparision();
+                     *      
+                     *      if (comp == null)
+                     *          break;
+                     *          
+                     *      WriteLine(comparision text);
+                     *      answer = ReadLine();
+                     *      administration.SetComparisionResult(answer);
+                     * }
+                    */
                 }
                 else if (input.Equals("e", StringComparison.CurrentCultureIgnoreCase))
                 {
