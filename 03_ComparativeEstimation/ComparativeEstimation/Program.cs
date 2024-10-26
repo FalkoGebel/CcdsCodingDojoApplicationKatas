@@ -83,26 +83,53 @@ namespace ComparativeEstimation
                 }
                 else if (input.Equals("c", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    // TODO - (C)ompare
+                    // Choose project
+                    Console.Write("Project number: ");
+                    string? projectNumber = Console.ReadLine();
 
-                    /*
-                     * 1. choose project
-                     * 
-                     * 2. show title
-                     * 
-                     * 3. ask for comparisions
-                     * while (true)
-                     * {
-                     *      comp = administraton.GetNextComparision();
-                     *      
-                     *      if (comp == null)
-                     *          break;
-                     *          
-                     *      WriteLine(comparision text);
-                     *      answer = ReadLine();
-                     *      administration.SetComparisionResult(answer);
-                     * }
-                    */
+                    try
+                    {
+                        administration.SetCurrentProject(projectNumber);
+                    }
+                    catch (ArgumentException ae)
+                    {
+                        Console.WriteLine($"Invalid project number - {ae.Message}");
+                        continue;
+                    }
+
+                    // Show title
+                    Console.WriteLine($"\n{administration.GetCurrentProjectTitle()}");
+
+                    // Ask for repeatedly for comparisions
+                    while (true)
+                    {
+                        Comparision? comparision = administration.GetNextComparision();
+
+                        if (comparision == null)
+                            break;
+
+                        Console.Write($"Compare {comparision.Item1.Output} to {comparision.Item2.Output}: ");
+                        input = Console.ReadLine();
+                        char choosenItem;
+
+                        if (string.IsNullOrEmpty(input) || input.Length > 1 ||
+                            (!input.Equals(comparision.Item1.Id.ToString()) && !input.Equals(comparision.Item2.Id.ToString())))
+                        {
+                            choosenItem = comparision.Item1.Id;
+                            Console.WriteLine($"No or invalid item id given -> {choosenItem} choosen");
+                        }
+                        else
+                        {
+                            choosenItem = input[0];
+                        }
+
+                        administration.AddItemRanking(comparision, choosenItem);
+                    }
+
+                    // TODO - Save the user ranking for the current project
+
+                    // TODO - Show the user ranking for the current project
+
                 }
                 else if (input.Equals("e", StringComparison.CurrentCultureIgnoreCase))
                 {
@@ -115,7 +142,6 @@ namespace ComparativeEstimation
                         Console.WriteLine(project);
                 }
             } while (true);
-
         }
     }
 }

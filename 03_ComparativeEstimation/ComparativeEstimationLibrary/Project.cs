@@ -12,6 +12,7 @@
         internal List<List<char>> RankedItemIds { get; set; } = [];
         internal char CurrentItem1ToRank { get; set; } = ' ';
         internal char CurrentItem2ToRank { get; set; } = ' ';
+        internal int CurrentItem1Index { get; set; }
         internal Comparision[] Comparisions { get; private set; } = [];
         internal Dictionary<string, Item[]> Comparations { get; private set; } = [];
 

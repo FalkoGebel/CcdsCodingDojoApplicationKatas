@@ -165,17 +165,22 @@ namespace ComparativeEstimationTests
 
             // Assert
             comparision.Should().NotBeNull();
-            comparision.Item1.Output.Should().Be($"A: \"Item A\"");
-            comparision.Item2.Output.Should().Be($"B: \"Item B\"");
-
+            if (comparision != null)
+            {
+                comparision.Item1.Output.Should().Be($"A: \"Item A\"");
+                comparision.Item2.Output.Should().Be($"B: \"Item B\"");
+            }
 
             // Act
             comparision = sut.GetNextComparision();
 
             // Assert
             comparision.Should().NotBeNull();
-            comparision.Item1.Output.Should().Be($"A: \"Item A\"");
-            comparision.Item2.Output.Should().Be($"C: \"Item C\"");
+            if (comparision != null)
+            {
+                comparision.Item1.Output.Should().Be($"A: \"Item A\"");
+                comparision.Item2.Output.Should().Be($"C: \"Item C\"");
+            }
         }
     }
 }
