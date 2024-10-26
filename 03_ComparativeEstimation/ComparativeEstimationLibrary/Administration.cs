@@ -49,16 +49,18 @@ namespace ComparativeEstimationLibrary
 
         public void AddTitleToProject(string title) => _currentProject.Title = title;
 
-        public string GetProjectString(int projectId) => GetProjectForId(projectId).ToString();
+        public string GetCurrentProjectTitle() => _currentProject.Title;
 
-        private Project GetProjectForId(int projectId)
-        {
-            Project? project = _projects.Where(p => p.Id == projectId).FirstOrDefault();
+        //public string GetProjectString(int projectId) => GetProjectForId(projectId).ToString();
 
-            return project == null
-                ? throw new ArgumentException($"Invalid project id - there is no project with id \"{projectId}\"")
-                : project;
-        }
+        //private Project GetProjectForId(int projectId)
+        //{
+        //    Project? project = _projects.Where(p => p.Id == projectId).FirstOrDefault();
+
+        //    return project == null
+        //        ? throw new ArgumentException($"Invalid project id - there is no project with id \"{projectId}\"")
+        //        : project;
+        //}
 
         public char GetNextItemIdForProject() => _currentProject.GetNextItemId();
 
@@ -161,7 +163,7 @@ namespace ComparativeEstimationLibrary
         /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
         public static void WriteToJsonFile<T>(string filePath, T objectToWrite, bool append = false) where T : new()
         {
-            TextWriter writer = null;
+            TextWriter? writer = null;
             try
             {
                 var contentsToWriteToFile = JsonConvert.SerializeObject(objectToWrite);
@@ -186,12 +188,12 @@ namespace ComparativeEstimationLibrary
         /// <returns>Returns a new instance of the object read from the Json file.</returns>
         public static T ReadFromJsonFile<T>(FileStream fs) where T : new()
         {
-            TextReader reader = null;
+            TextReader? reader = null;
             try
             {
                 reader = new StreamReader(fs);
                 var fileContents = reader.ReadToEnd();
-                return JsonConvert.DeserializeObject<T>(fileContents);
+                return JsonConvert.DeserializeObject<T>(fileContents) ?? new();
             }
             finally
             {
@@ -220,32 +222,74 @@ namespace ComparativeEstimationLibrary
             {
                 _currentProject.CurrentItem1ToRank = _currentProject.Items[0].Id;
                 _currentProject.CurrentItem2ToRank = (char)(_currentProject.CurrentItem1ToRank + 1);
-                _currentProject.RankedItemIds.Add([_currentProject.CurrentItem1ToRank]);
+                _currentProject.RankedItemIds.Add([]);
+                _currentProject.RankedItemIds.Add(_currentProject.Items.Select(i => i.Id).ToList());
+                _currentProject.RankedItemIds.Add([]);
+                _currentProject.CurrentItem1Index = 1;
             }
 
             while (true)
             {
-                if (_currentProject.CurrentItem1ToRank >= _currentProject.Items[^1].Id)
-                    break;
-
                 if (_currentProject.CurrentItem2ToRank >= _currentProject.Items[^1].Id)
                 {
                     _currentProject.CurrentItem1ToRank++;
-                    _currentProject.CurrentItem2ToRank = (char)(_currentProject.CurrentItem1ToRank + 1);
+
+                    if (_currentProject.CurrentItem1ToRank >= _currentProject.Items[^1].Id)
+                        break;
+
+                    _currentProject.CurrentItem1Index = _currentProject.RankedItemIds.Select((l, i) => l.Contains(_currentProject.CurrentItem1ToRank) ? i : -1)
+                                                                                     .Where(idx => idx >= 0)
+                                                                                     .First();
+                    _currentProject.RankedItemIds.Insert(_currentProject.CurrentItem1Index, []);
+                    _currentProject.CurrentItem1Index++;
+                    _currentProject.RankedItemIds.Insert(_currentProject.CurrentItem1Index + 1, []);
+                }
+
+                if (_currentProject.RankedItemIds[_currentProject.CurrentItem1Index].Count <= 1)
+                {
+                    _currentProject.CurrentItem2ToRank = _currentProject.Items[^1].Id;
                     continue;
                 }
 
-                // TODO - consider the list _currentProject.RankedItemIds
+                _currentProject.CurrentItem2ToRank = _currentProject.RankedItemIds[_currentProject.CurrentItem1Index][1];
+                _currentProject.RankedItemIds[_currentProject.CurrentItem1Index].RemoveAt(1);
 
                 Item item1 = _currentProject.Items.Where(i => i.Id == _currentProject.CurrentItem1ToRank).First(),
                      item2 = _currentProject.Items.Where(i => i.Id == _currentProject.CurrentItem2ToRank).First();
-
-                _currentProject.CurrentItem2ToRank++;
 
                 return new(item1, item2);
             }
 
             return null;
+        }
+
+        public void AddItemRanking(Comparision comparision, char preferedItemId)
+        {
+            if (preferedItemId == comparision.Item1.Id)
+                _currentProject.RankedItemIds[_currentProject.CurrentItem1Index + 1].Add(comparision.Item2.Id);
+            else
+                _currentProject.RankedItemIds[_currentProject.CurrentItem1Index - 1].Add(comparision.Item2.Id);
+        }
+
+        public void SetCurrentProject(string? projectNumberInput)
+        {
+            if (string.IsNullOrEmpty(projectNumberInput))
+                throw new ArgumentException("No project number given");
+
+            int projectNumber;
+            try
+            {
+                projectNumber = int.Parse(projectNumberInput);
+            }
+            catch (FormatException)
+            {
+                throw new ArgumentException("Project number is not a valid integer");
+            }
+
+            FileStream fs = OpenAndGetFileStream();
+            LoadProjectsFromFile(fs);
+            _currentProject = _projects.Where(p => p.Id == projectNumber).FirstOrDefault() ??
+                throw new ArgumentException($"There is no project with number {projectNumber}");
         }
     }
 }
