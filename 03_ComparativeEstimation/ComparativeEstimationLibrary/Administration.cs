@@ -7,9 +7,13 @@ namespace ComparativeEstimationLibrary
     {
         private readonly string _testFileName = "test.txt";
         private readonly string _fileName = "compest.bat";
+        private readonly List<Project> _projects = [];
         private string _currentUserAsEmail = string.Empty;
-        private List<Project> _projects = [];
         private Project _currentProject = new();
+        private char CurrentItem1ToRank { get; set; } = ' ';
+        private char CurrentItem2ToRank { get; set; } = ' ';
+        private int CurrentItem1Index { get; set; }
+        private List<List<char>> RankedItemIds { get; set; } = [];
 
         public string CurrentUserAsEmail
         {
@@ -51,17 +55,6 @@ namespace ComparativeEstimationLibrary
 
         public string GetCurrentProjectTitle() => _currentProject.Title;
 
-        //public string GetProjectString(int projectId) => GetProjectForId(projectId).ToString();
-
-        //private Project GetProjectForId(int projectId)
-        //{
-        //    Project? project = _projects.Where(p => p.Id == projectId).FirstOrDefault();
-
-        //    return project == null
-        //        ? throw new ArgumentException($"Invalid project id - there is no project with id \"{projectId}\"")
-        //        : project;
-        //}
-
         public char GetNextItemIdForProject() => _currentProject.GetNextItemId();
 
         public void AddItemToProject(char itemId, string itemDescription)
@@ -73,28 +66,17 @@ namespace ComparativeEstimationLibrary
 
         public void SaveProject()
         {
-            FileStream fs = OpenAndGetFileStream();
-
-            LoadProjectsFromFile(fs);
+            LoadProjectsFromFile();
 
             _currentProject.Id = _projects.Count + 1;
             _projects.Add(_currentProject);
 
-            SaveProjectsToFile(fs);
-
-            fs.Close();
+            SaveProjectsToFile();
         }
 
-        private FileStream OpenAndGetFileStream()
-        {
-            FileStream fs = new(_testFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
-            return fs;
-        }
-
-        private void SaveProjectsToFile(FileStream fs)
+        private void SaveProjectsToFile()
         {
             // TODO - save projects to correct file name -> binary
-            // TODO - complete model(s) during saving
             List<ProjectModel> projectModels = [];
 
             foreach (Project project in _projects)
@@ -114,17 +96,19 @@ namespace ComparativeEstimationLibrary
                     });
                 }
 
+                foreach (string userAsEmail in project.UsersRankedItemIds.Keys)
+                    projectModel.UsersRankedItemIds[userAsEmail] = project.UsersRankedItemIds[userAsEmail];
+
                 projectModels.Add(projectModel);
             }
 
             WriteToJsonFile(_testFileName, projectModels);
         }
 
-        private void LoadProjectsFromFile(FileStream fs)
+        private void LoadProjectsFromFile()
         {
             // TODO - load projects from correct file name -> binary
-            // TODO - complete model(s) during loading
-            List<ProjectModel> projectModels = ReadFromJsonFile<List<ProjectModel>>(fs);
+            List<ProjectModel> projectModels = ReadFromJsonFile<List<ProjectModel>>(_testFileName);
 
             _projects.Clear();
 
@@ -146,6 +130,9 @@ namespace ComparativeEstimationLibrary
                         });
                     }
 
+                    foreach (string userAsEmail in projectModel.UsersRankedItemIds.Keys)
+                        project.UsersRankedItemIds[userAsEmail] = projectModel.UsersRankedItemIds[userAsEmail];
+
                     _projects.Add(project);
                 }
             }
@@ -161,21 +148,24 @@ namespace ComparativeEstimationLibrary
         /// <param name="filePath">The file path to write the object instance to.</param>
         /// <param name="objectToWrite">The object instance to write to the file.</param>
         /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
-        public static void WriteToJsonFile<T>(string filePath, T objectToWrite, bool append = false) where T : new()
+        public static void WriteToJsonFile<T>(string filePath, T objectToWrite) where T : new()
         {
             TextWriter? writer = null;
+
             try
             {
+                FileStream fs = new(filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None);
                 var contentsToWriteToFile = JsonConvert.SerializeObject(objectToWrite);
-
-                FileStream fs = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
                 writer = new StreamWriter(fs);
                 writer.Write(contentsToWriteToFile);
             }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"File error - {e.Message}");
+            }
             finally
             {
-                if (writer != null)
-                    writer.Close();
+                writer?.Close();
             }
         }
 
@@ -186,14 +176,20 @@ namespace ComparativeEstimationLibrary
         /// <typeparam name="T">The type of object to read from the file.</typeparam>
         /// <param name="filePath">The file path to read the object instance from.</param>
         /// <returns>Returns a new instance of the object read from the Json file.</returns>
-        public static T ReadFromJsonFile<T>(FileStream fs) where T : new()
+        public static T ReadFromJsonFile<T>(string filePath) where T : new()
         {
             TextReader? reader = null;
+
             try
             {
+                FileStream fs = new(filePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
                 reader = new StreamReader(fs);
                 var fileContents = reader.ReadToEnd();
                 return JsonConvert.DeserializeObject<T>(fileContents) ?? new();
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"File error - {e.Message}");
             }
             finally
             {
@@ -206,10 +202,7 @@ namespace ComparativeEstimationLibrary
 
         public IEnumerable<string> GetProjects()
         {
-            FileStream fs = OpenAndGetFileStream();
-            LoadProjectsFromFile(fs);
-            fs.Close();
-
+            LoadProjectsFromFile();
             return _projects.Select(p => $"{p.Id}. {(p.Title == string.Empty ? "<UNTITLED>" : p.Title)}");
         }
 
@@ -218,44 +211,44 @@ namespace ComparativeEstimationLibrary
             if (_currentProject.Items.Count == 0)
                 return null;
 
-            if (_currentProject.RankedItemIds.Count == 0)
+            if (RankedItemIds.Count == 0)
             {
-                _currentProject.CurrentItem1ToRank = _currentProject.Items[0].Id;
-                _currentProject.CurrentItem2ToRank = (char)(_currentProject.CurrentItem1ToRank + 1);
-                _currentProject.RankedItemIds.Add([]);
-                _currentProject.RankedItemIds.Add(_currentProject.Items.Select(i => i.Id).ToList());
-                _currentProject.RankedItemIds.Add([]);
-                _currentProject.CurrentItem1Index = 1;
+                CurrentItem1ToRank = _currentProject.Items[0].Id;
+                CurrentItem2ToRank = (char)(CurrentItem1ToRank + 1);
+                RankedItemIds.Add([]);
+                RankedItemIds.Add(_currentProject.Items.Select(i => i.Id).ToList());
+                RankedItemIds.Add([]);
+                CurrentItem1Index = 1;
             }
 
             while (true)
             {
-                if (_currentProject.CurrentItem2ToRank >= _currentProject.Items[^1].Id)
+                if (CurrentItem2ToRank > _currentProject.Items[^1].Id)
                 {
-                    _currentProject.CurrentItem1ToRank++;
+                    CurrentItem1ToRank++;
 
-                    if (_currentProject.CurrentItem1ToRank >= _currentProject.Items[^1].Id)
+                    if (CurrentItem1ToRank >= _currentProject.Items[^1].Id)
                         break;
 
-                    _currentProject.CurrentItem1Index = _currentProject.RankedItemIds.Select((l, i) => l.Contains(_currentProject.CurrentItem1ToRank) ? i : -1)
+                    CurrentItem1Index = RankedItemIds.Select((l, i) => l.Contains(CurrentItem1ToRank) ? i : -1)
                                                                                      .Where(idx => idx >= 0)
                                                                                      .First();
-                    _currentProject.RankedItemIds.Insert(_currentProject.CurrentItem1Index, []);
-                    _currentProject.CurrentItem1Index++;
-                    _currentProject.RankedItemIds.Insert(_currentProject.CurrentItem1Index + 1, []);
+                    RankedItemIds.Insert(CurrentItem1Index, []);
+                    CurrentItem1Index++;
+                    RankedItemIds.Insert(CurrentItem1Index + 1, []);
                 }
 
-                if (_currentProject.RankedItemIds[_currentProject.CurrentItem1Index].Count <= 1)
+                if (RankedItemIds[CurrentItem1Index].Count <= 1)
                 {
-                    _currentProject.CurrentItem2ToRank = _currentProject.Items[^1].Id;
+                    CurrentItem2ToRank = (char)(_currentProject.Items[^1].Id + 1);
                     continue;
                 }
 
-                _currentProject.CurrentItem2ToRank = _currentProject.RankedItemIds[_currentProject.CurrentItem1Index][1];
-                _currentProject.RankedItemIds[_currentProject.CurrentItem1Index].RemoveAt(1);
+                CurrentItem2ToRank = RankedItemIds[CurrentItem1Index][1];
+                RankedItemIds[CurrentItem1Index].RemoveAt(1);
 
-                Item item1 = _currentProject.Items.Where(i => i.Id == _currentProject.CurrentItem1ToRank).First(),
-                     item2 = _currentProject.Items.Where(i => i.Id == _currentProject.CurrentItem2ToRank).First();
+                Item item1 = _currentProject.Items.Where(i => i.Id == CurrentItem1ToRank).First(),
+                     item2 = _currentProject.Items.Where(i => i.Id == CurrentItem2ToRank).First();
 
                 return new(item1, item2);
             }
@@ -266,9 +259,9 @@ namespace ComparativeEstimationLibrary
         public void AddItemRanking(Comparision comparision, char preferedItemId)
         {
             if (preferedItemId == comparision.Item1.Id)
-                _currentProject.RankedItemIds[_currentProject.CurrentItem1Index + 1].Add(comparision.Item2.Id);
+                RankedItemIds[CurrentItem1Index + 1].Add(comparision.Item2.Id);
             else
-                _currentProject.RankedItemIds[_currentProject.CurrentItem1Index - 1].Add(comparision.Item2.Id);
+                RankedItemIds[CurrentItem1Index - 1].Add(comparision.Item2.Id);
         }
 
         public void SetCurrentProject(string? projectNumberInput)
@@ -286,10 +279,26 @@ namespace ComparativeEstimationLibrary
                 throw new ArgumentException("Project number is not a valid integer");
             }
 
-            FileStream fs = OpenAndGetFileStream();
-            LoadProjectsFromFile(fs);
+            LoadProjectsFromFile();
             _currentProject = _projects.Where(p => p.Id == projectNumber).FirstOrDefault() ??
                 throw new ArgumentException($"There is no project with number {projectNumber}");
+        }
+
+        public void SaveCurrentItemRanking()
+        {
+            LoadProjectsFromFile();
+
+            Project project = _projects.First(p => p.Id == _currentProject.Id);
+            project.AddComparation(CurrentUserAsEmail, RankedItemIds.SelectMany(id => id).ToList());
+            RankedItemIds = [];
+
+            SaveProjectsToFile();
+        }
+
+        public IEnumerable<Item> GetRankedItemsForCurrentProject()
+        {
+            Project project = _projects.First(p => p.Id == _currentProject.Id);
+            return project.UsersRankedItemIds[_currentUserAsEmail].Select(id => project.Items.First(i => i.Id == id));
         }
     }
 }

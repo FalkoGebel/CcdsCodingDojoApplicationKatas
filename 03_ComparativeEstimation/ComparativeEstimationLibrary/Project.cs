@@ -2,19 +2,15 @@
 {
     internal class Project()
     {
-        private readonly int _minNumberOfItems = 2;
         private readonly int _maxNumberOfItems = 10;
         private readonly char _firstId = 'A';
 
         internal int Id { get; set; }
         internal string Title { get; set; } = string.Empty;
         internal List<Item> Items { get; private set; } = [];
-        internal List<List<char>> RankedItemIds { get; set; } = [];
-        internal char CurrentItem1ToRank { get; set; } = ' ';
-        internal char CurrentItem2ToRank { get; set; } = ' ';
-        internal int CurrentItem1Index { get; set; }
-        internal Comparision[] Comparisions { get; private set; } = [];
-        internal Dictionary<string, Item[]> Comparations { get; private set; } = [];
+        internal Dictionary<string, List<char>> UsersRankedItemIds { get; private set; } = [];
+
+        internal void AddComparation(string userAsEmail, List<char> rankedItemIds) => UsersRankedItemIds[userAsEmail] = rankedItemIds;
 
         internal void AddItem(char itemId, string itemDescription)
         {
