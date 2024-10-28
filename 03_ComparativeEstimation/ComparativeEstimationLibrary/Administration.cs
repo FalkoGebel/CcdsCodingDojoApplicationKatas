@@ -5,8 +5,7 @@ namespace ComparativeEstimationLibrary
 {
     public class Administration
     {
-        private readonly string _testFileName = "test.txt";
-        private readonly string _fileName = "compest.bat";
+        private readonly string _fileName = "compest.data";
         private readonly List<Project> _projects = [];
         private string _currentUserAsEmail = string.Empty;
         private Project _currentProject = new();
@@ -76,7 +75,6 @@ namespace ComparativeEstimationLibrary
 
         private void SaveProjectsToFile()
         {
-            // TODO - save projects to correct file name -> binary
             List<ProjectModel> projectModels = [];
 
             foreach (Project project in _projects)
@@ -102,13 +100,12 @@ namespace ComparativeEstimationLibrary
                 projectModels.Add(projectModel);
             }
 
-            WriteToJsonFile(_testFileName, projectModels);
+            WriteToJsonFile(_fileName, projectModels);
         }
 
         private void LoadProjectsFromFile()
         {
-            // TODO - load projects from correct file name -> binary
-            List<ProjectModel> projectModels = ReadFromJsonFile<List<ProjectModel>>(_testFileName);
+            List<ProjectModel> projectModels = ReadFromJsonFile<List<ProjectModel>>(_fileName);
 
             _projects.Clear();
 
@@ -299,6 +296,15 @@ namespace ComparativeEstimationLibrary
         {
             Project project = _projects.First(p => p.Id == _currentProject.Id);
             return project.UsersRankedItemIds[_currentUserAsEmail].Select(id => project.Items.First(i => i.Id == id));
+        }
+
+        public IEnumerable<Item> GetTotalRankedItemsForCurrentProject()
+        {
+            Project project = _projects.First(p => p.Id == _currentProject.Id);
+            return project.Items.OrderBy(i => project.UsersRankedItemIds.Values.Select(ids => ids.Select((id, idx) => id == i.Id ? idx : -1)
+                                                                                                 .Where(idx => idx >= 0)
+                                                                                                 .First())
+                                                                               .Sum());
         }
     }
 }

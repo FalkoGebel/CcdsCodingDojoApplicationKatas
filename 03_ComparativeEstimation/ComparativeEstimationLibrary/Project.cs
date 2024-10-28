@@ -23,18 +23,6 @@
             Items.Add(new(itemId) { Description = itemDescription });
         }
 
-        internal void AddOrUpdateComparation(string email, Item[] items)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal Item[] GetCummulatedComparation()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override string ToString() => $"{Id}. {(Title == string.Empty ? "<UNTITLED>" : Title)}";
-
         internal char GetNextItemId()
         {
             if (Items.Count == _maxNumberOfItems)

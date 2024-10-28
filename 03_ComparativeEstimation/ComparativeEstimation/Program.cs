@@ -150,8 +150,34 @@ namespace ComparativeEstimation
                 }
                 else if (input.Equals("e", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    // TODO - (E)valuate
+                    try
+                    {
+                        // Choose project
+                        Console.Write("Project number: ");
+                        string? projectNumber = Console.ReadLine();
 
+                        try
+                        {
+                            administration.SetCurrentProject(projectNumber);
+                        }
+                        catch (ArgumentException ae)
+                        {
+                            Console.WriteLine($"Invalid project number - {ae.Message}");
+                            continue;
+                        }
+
+                        // Show title
+                        Console.WriteLine($"\nTotal ranking of {administration.GetCurrentProjectTitle()}");
+
+                        // Show ranking
+                        foreach (Item item in administration.GetTotalRankedItemsForCurrentProject())
+                            Console.WriteLine($" {item.Output}");
+                    }
+                    catch (InvalidOperationException ioe)
+                    {
+                        Console.WriteLine(ioe.Message);
+                        continue;
+                    }
                 }
                 else if (input.Equals("l", StringComparison.CurrentCultureIgnoreCase))
                 {
