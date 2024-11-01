@@ -26,11 +26,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalTests", "02_Cal\CalTests
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03_ComparativeEstimation", "03_ComparativeEstimation", "{4B57155E-8D86-480D-8EC0-B4EA8ECDDA20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComparativeEstimation", "03_ComparativeEstimation\ComparativeEstimation\ComparativeEstimation.csproj", "{797337C1-A045-4B0E-BD7F-9AB248CEDFB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComparativeEstimation", "03_ComparativeEstimation\ComparativeEstimation\ComparativeEstimation.csproj", "{797337C1-A045-4B0E-BD7F-9AB248CEDFB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComparativeEstimationLibrary", "03_ComparativeEstimation\ComparativeEstimationLibrary\ComparativeEstimationLibrary.csproj", "{F75498D3-95F6-4AC9-A55F-1AE0E7929946}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComparativeEstimationLibrary", "03_ComparativeEstimation\ComparativeEstimationLibrary\ComparativeEstimationLibrary.csproj", "{F75498D3-95F6-4AC9-A55F-1AE0E7929946}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComparativeEstimationTests", "03_ComparativeEstimation\ComparativeEstimationTests\ComparativeEstimationTests.csproj", "{391E29FC-DBFF-46F2-84ED-6A67B9D0203F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComparativeEstimationTests", "03_ComparativeEstimation\ComparativeEstimationTests\ComparativeEstimationTests.csproj", "{391E29FC-DBFF-46F2-84ED-6A67B9D0203F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04_ConvertRoman", "04_ConvertRoman", "{5437E925-D4BF-4626-8979-8E9A60A354BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertRoman", "04_ConvertRoman\ConvertRoman\ConvertRoman.csproj", "{7FF24497-8686-4E89-A67D-E56DF5AF3A9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertRomanLibrary", "04_ConvertRoman\ConvertRomanLibrary\ConvertRomanLibrary.csproj", "{AA86D42F-FCE4-4244-885F-591669C46E39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +80,14 @@ Global
 		{391E29FC-DBFF-46F2-84ED-6A67B9D0203F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{391E29FC-DBFF-46F2-84ED-6A67B9D0203F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{391E29FC-DBFF-46F2-84ED-6A67B9D0203F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FF24497-8686-4E89-A67D-E56DF5AF3A9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FF24497-8686-4E89-A67D-E56DF5AF3A9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FF24497-8686-4E89-A67D-E56DF5AF3A9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FF24497-8686-4E89-A67D-E56DF5AF3A9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA86D42F-FCE4-4244-885F-591669C46E39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA86D42F-FCE4-4244-885F-591669C46E39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA86D42F-FCE4-4244-885F-591669C46E39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA86D42F-FCE4-4244-885F-591669C46E39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +102,8 @@ Global
 		{797337C1-A045-4B0E-BD7F-9AB248CEDFB4} = {4B57155E-8D86-480D-8EC0-B4EA8ECDDA20}
 		{F75498D3-95F6-4AC9-A55F-1AE0E7929946} = {4B57155E-8D86-480D-8EC0-B4EA8ECDDA20}
 		{391E29FC-DBFF-46F2-84ED-6A67B9D0203F} = {4B57155E-8D86-480D-8EC0-B4EA8ECDDA20}
+		{7FF24497-8686-4E89-A67D-E56DF5AF3A9A} = {5437E925-D4BF-4626-8979-8E9A60A354BF}
+		{AA86D42F-FCE4-4244-885F-591669C46E39} = {5437E925-D4BF-4626-8979-8E9A60A354BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7DE62E50-FC5D-4074-9D04-1C787BD8A828}
