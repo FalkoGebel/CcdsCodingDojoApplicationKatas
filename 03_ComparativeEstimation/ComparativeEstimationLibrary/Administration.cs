@@ -144,7 +144,6 @@ namespace ComparativeEstimationLibrary
         /// <typeparam name="T">The type of object being written to the file.</typeparam>
         /// <param name="filePath">The file path to write the object instance to.</param>
         /// <param name="objectToWrite">The object instance to write to the file.</param>
-        /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
         public static void WriteToJsonFile<T>(string filePath, T objectToWrite) where T : new()
         {
             TextWriter? writer = null;
