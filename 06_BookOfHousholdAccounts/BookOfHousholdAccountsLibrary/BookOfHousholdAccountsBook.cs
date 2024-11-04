@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Globalization;
 
 namespace BookOfHousholdAccountsLibrary
 {
@@ -30,6 +31,109 @@ namespace BookOfHousholdAccountsLibrary
             WriteToJsonFile(_fileName, _bookEntries);
         }
 
+        private IEnumerable<string> AddDepositBookEntry(string[] parameters)
+        {
+            if (parameters.Length < 1 || parameters.Length > 2)
+                return ["Invalid number of deposit arguments given. Use \"-?\" as parameter to show help."];
+
+            DateTime dateTime = DateTime.Now;
+            int amountIndex = 0;
+
+            if (parameters.Length == 2)
+            {
+                try
+                {
+                    dateTime = DateTime.ParseExact(parameters[0], "d", CultureInfo.CurrentCulture);
+                    amountIndex++;
+                }
+                catch (FormatException)
+                {
+                    return ["Invalid deposit date argument given. Use \"-?\" as parameter to show help."];
+                }
+            }
+
+            decimal amount;
+            try
+            {
+                amount = Convert.ToDecimal(parameters[amountIndex]);
+            }
+            catch (FormatException)
+            {
+                return ["Invalid deposit amount argument given. Use \"-?\" as parameter to show help."];
+            }
+
+            if (amount > 0)
+            {
+
+                _bookEntries.Add(new BookEntryModel
+                {
+                    EntryType = BookEntryType.Deposit,
+                    PostingDate = dateTime,
+                    Category = string.Empty,
+                    MemoText = string.Empty,
+                    Amount = amount
+                });
+
+                SaveBookEntriesToFile();
+                return [GetCashBalance(DateTime.Now)];
+            }
+            else
+            {
+                return ["Invalid amount. Amount has to be positive."];
+            }
+        }
+
+        private string GetCashBalance(DateTime dateTime)
+        {
+            decimal amount = _bookEntries.Where(be => be.PostingDate.Date <= dateTime && be.EntryType == BookEntryType.Deposit)
+                                              .Select(be => be.Amount)
+                                              .Sum() -
+                             _bookEntries.Where(be => be.PostingDate.Date <= dateTime && be.EntryType == BookEntryType.Spending)
+                                              .Select(be => be.Amount)
+                                              .Sum(); ;
+            return $"Cash balance: {amount:F2} EUR";
+        }
+
+        private IEnumerable<string> GetMonthOverview(string[] parameters)
+        {
+            if (parameters.Length != 0 && parameters.Length != 2)
+                return ["Invalid number of overview arguments given. Use \"-?\" as parameter to show help."];
+
+            DateTime firstOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); ;
+
+            if (parameters.Length == 2)
+            {
+                if (!int.TryParse(parameters[0], out var month) || month < 1 || month > 12)
+                    return ["Invalid overview month argument given. Use \"-?\" as parameter to show help."];
+
+                if (!int.TryParse(parameters[1], out var year))
+                    return ["Invalid overview year argument given. Use \"-?\" as parameter to show help."];
+
+                try
+                {
+                    firstOfMonth = new DateTime(year, month, 1);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    return ["Invalid overview year argument given. Use \"-?\" as parameter to show help."];
+                }
+            }
+
+            DateTime endOfMonth = firstOfMonth.AddMonths(1);
+            endOfMonth = endOfMonth.AddDays(-1);
+
+            LoadBookEntriesFromFile();
+
+            List<string> output = [$"{firstOfMonth.ToString("Y")}",
+                                   "------------------------",
+                                   GetCashBalance(firstOfMonth)];
+
+            foreach (BookEntryModel entry in _bookEntries.Where(be => be.PostingDate >= firstOfMonth && be.PostingDate <= endOfMonth))
+                output.Add($"{(entry.EntryType == BookEntryType.Deposit ? "Deposit" : entry.Category)}: {entry.Amount:F2}");
+
+            return output;
+        }
+
         public IEnumerable<string> AddBookEntry(string[] arguments)
         {
             if (arguments.Length == 0)
@@ -39,40 +143,11 @@ namespace BookOfHousholdAccountsLibrary
 
             // TODO - Show help
 
-            // TODO - Show overview
+            if (arguments[0].Equals("overview", StringComparison.CurrentCultureIgnoreCase))
+                return GetMonthOverview(arguments[1..]);
 
-            // TODO - Process deposit with date
             if (arguments[0].Equals("deposit", StringComparison.CurrentCultureIgnoreCase))
-            {
-                decimal amount = Convert.ToDecimal(arguments[1]);
-
-                if (amount > 0)
-                {
-
-                    _bookEntries.Add(new BookEntryModel
-                    {
-                        EntryType = BookEntryType.Deposit,
-                        PostingDate = DateTime.Now,
-                        Category = string.Empty,
-                        MemoText = string.Empty,
-                        Amount = amount
-                    });
-
-                    decimal cashBalance = _bookEntries.Where(be => be.PostingDate.Date <= DateTime.Now.Date && be.EntryType == BookEntryType.Deposit)
-                                                      .Select(be => be.Amount)
-                                                      .Sum() -
-                                          _bookEntries.Where(be => be.PostingDate.Date <= DateTime.Now.Date && be.EntryType == BookEntryType.Spending)
-                                                      .Select(be => be.Amount)
-                                                      .Sum();
-                    output.Add($"Cash balance: {cashBalance:F2} EUR");
-                }
-                else
-                {
-                    output.Add("Invalid amount. Amount has to be positive.");
-                }
-
-                SaveBookEntriesToFile();
-            }
+                return AddDepositBookEntry(arguments[1..]);
 
             // TODO - Process spending
 

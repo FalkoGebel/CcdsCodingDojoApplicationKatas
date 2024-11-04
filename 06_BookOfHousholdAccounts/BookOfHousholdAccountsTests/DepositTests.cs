@@ -21,5 +21,20 @@ namespace BookOfHousholdAccountsTests
             // Assert
             result.Should().BeEquivalentTo(expected);
         }
+
+        [DataTestMethod]
+        [DataRow(false, "400", new string[] { "Cash balance: 400,00 EUR" })]
+        [DataRow(true, "500,20", new string[] { "Cash balance: 0,00 EUR" })]
+        [DataRow(false, "1111,11", new string[] { "Cash balance: 1111,11 EUR" })]
+        [DataRow(true, "5000,12", new string[] { "Cash balance: 0,00 EUR" })]
+        public void Valid_deposit_with_date(bool future, string amount, string[] expected)
+        {
+            // Act
+            DateTime dateTime = DateTime.Now.AddDays(future ? 5 : 0);
+            string[] result = sut.AddBookEntry(["deposit", dateTime.ToString("d"), amount]).ToArray();
+
+            // Assert
+            result.Should().BeEquivalentTo(expected);
+        }
     }
 }
