@@ -3,6 +3,6 @@
     enum BookEntryType
     {
         Deposit,
-        Spending
+        Payout
     }
 }

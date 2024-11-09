@@ -7,8 +7,20 @@ namespace BookOfHousholdAccounts
         static void Main(string[] args)
         {
             BookOfHousholdAccountsBook BookOfHousholdAccountsBook = new();
-            foreach (string result in BookOfHousholdAccountsBook.AddBookEntry(args))
-                Console.WriteLine(result);
+            string[] result = BookOfHousholdAccountsBook.ProcessInput(args, out bool secondCall).ToArray();
+
+            if (secondCall)
+            {
+                Console.Write(result[0]);
+                var input = Console.ReadLine();
+                if (input != null)
+                    _ = BookOfHousholdAccountsBook.ProcessInput(input.Split(), out _);
+            }
+            else
+            {
+                foreach (string line in result)
+                    Console.WriteLine(line);
+            }
         }
     }
 }

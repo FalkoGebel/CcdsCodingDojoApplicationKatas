@@ -15,7 +15,7 @@ namespace BookOfHousholdAccountsTests
             string[] expected = ["No arguments given. Use \"-?\" as parameter to show help."];
 
             // Act
-            string[] result = sut.AddBookEntry([]).ToArray();
+            string[] result = sut.ProcessInput([], out bool _).ToArray();
 
             // Assert
             result.Should().BeEquivalentTo(expected);
@@ -30,7 +30,7 @@ namespace BookOfHousholdAccountsTests
             string[] expected = ["Invalid amount. Amount has to be positive."];
 
             // Act
-            string[] result = sut.AddBookEntry(arguments).ToArray();
+            string[] result = sut.ProcessInput(arguments, out bool _).ToArray();
 
             // Assert
             result.Should().BeEquivalentTo(expected);
@@ -47,7 +47,7 @@ namespace BookOfHousholdAccountsTests
             string[] expected = [$"Invalid number of {arguments[0]} arguments given. Use \"-?\" as parameter to show help."];
 
             // Act
-            string[] result = sut.AddBookEntry(arguments).ToArray();
+            string[] result = sut.ProcessInput(arguments, out bool _).ToArray();
 
             // Assert
             result.Should().BeEquivalentTo(expected);
@@ -63,7 +63,7 @@ namespace BookOfHousholdAccountsTests
             string[] expected = ["Invalid deposit date argument given. Use \"-?\" as parameter to show help."];
 
             // Act
-            string[] result = sut.AddBookEntry(arguments).ToArray();
+            string[] result = sut.ProcessInput(arguments, out bool _).ToArray();
 
             // Assert
             result.Should().BeEquivalentTo(expected);
@@ -78,7 +78,7 @@ namespace BookOfHousholdAccountsTests
             string[] expected = ["Invalid deposit amount argument given. Use \"-?\" as parameter to show help."];
 
             // Act
-            string[] result = sut.AddBookEntry(arguments).ToArray();
+            string[] result = sut.ProcessInput(arguments, out bool _).ToArray();
 
             // Assert
             result.Should().BeEquivalentTo(expected);
@@ -95,7 +95,7 @@ namespace BookOfHousholdAccountsTests
             string[] expected = ["Invalid overview month argument given. Use \"-?\" as parameter to show help."];
 
             // Act
-            string[] result = sut.AddBookEntry(arguments).ToArray();
+            string[] result = sut.ProcessInput(arguments, out bool _).ToArray();
 
             // Assert
             result.Should().BeEquivalentTo(expected);
@@ -112,7 +112,7 @@ namespace BookOfHousholdAccountsTests
             string[] expected = ["Invalid overview year argument given. Use \"-?\" as parameter to show help."];
 
             // Act
-            string[] result = sut.AddBookEntry(arguments).ToArray();
+            string[] result = sut.ProcessInput(arguments, out bool _).ToArray();
 
             // Assert
             result.Should().BeEquivalentTo(expected);
