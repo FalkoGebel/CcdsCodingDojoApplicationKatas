@@ -8,3 +8,4 @@ In this repository I am presenting my solutions for the application katas of the
 + 04: [Convert Roman](https://ccd-school.de/en/coding-dojo/application-katas/convert-roman/ "Convert Roman") -> [Done](/04_ConvertRoman/ "Project Folder")
 + 06: [Book Of Houshold Accounts](https://ccd-school.de/coding-dojo/application-katas/haushaltsbuch/ "Book Of Houshold Accounts") -> [Done](/06_BookOfHousholdAccounts/ "Project Folder")
 + 15: [More](https://ccd-school.de/en/coding-dojo/application-katas/more/ "More") -> [Done](/15_More/ "Project Folder")
++ 29: [Alarm Clock](https://ccd-school.de/en/coding-dojo/application-katas/alarm-clock/ "Alarm Clock") -> [Done](/29_AlarmClock/ "Project Folder")
